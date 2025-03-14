@@ -1,6 +1,5 @@
 package com.xamplify.demo.modal;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -20,8 +19,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "xa_module",
-       uniqueConstraints = { @UniqueConstraint(columnNames = "name") }) // ✅ Unique case-sensitive names
+@Table(name = "xa_module", uniqueConstraints = { @UniqueConstraint(columnNames = "name") }) // ✅ Unique case-sensitive
+																							// names
 @Getter
 @Setter
 @NoArgsConstructor
@@ -29,18 +28,18 @@ import lombok.Setter;
 @Builder
 public class Module {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ Uses auto-incremented BigInteger
-    private BigInteger id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ Uses auto-incremented BigInteger
+	private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String name; // ✅ Global module name (case-sensitive)
+	@Column(nullable = false, unique = true,columnDefinition = "CITEXT UNIQUE NOT NULL")
+	private String name; // ✅ Global module name (case-sensitive)
 
-    @Column(nullable = false, updatable = false)
-    @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
+	@Column(nullable = false, updatable = false)
+	@Builder.Default
+	private LocalDateTime createdAt = LocalDateTime.now();
 
-    // ✅ Mapped with CompanyModules
-    @OneToMany(mappedBy = "module", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<CompanyModule> companyModules;
+	// ✅ Mapped with CompanyModules
+	@OneToMany(mappedBy = "module", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<CompanyModule> companyModules;
 }

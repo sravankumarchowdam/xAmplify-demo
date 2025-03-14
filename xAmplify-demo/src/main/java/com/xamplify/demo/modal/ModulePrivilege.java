@@ -1,6 +1,5 @@
 package com.xamplify.demo.modal;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -19,8 +18,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "xa_module_privilege",
-       uniqueConstraints = { @UniqueConstraint(columnNames = { "module_id", "privilege_id" }) }) // ✅ Ensures uniqueness
+@Table(name = "xa_module_privilege", uniqueConstraints = {
+		@UniqueConstraint(columnNames = { "module_id", "privilege_id" }) }) // ✅ Ensures uniqueness
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,19 +27,19 @@ import lombok.Setter;
 @Builder
 public class ModulePrivilege {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ Uses auto-incremented BigInteger
-    private BigInteger id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ Uses auto-incremented BigInteger
+	private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "module_id", nullable = false)
-    private Module module; // ✅ Links to a module
+	@ManyToOne
+	@JoinColumn(name = "module_id", nullable = false)
+	private Module module; // ✅ Links to a module
 
-    @ManyToOne
-    @JoinColumn(name = "privilege_id", nullable = false)
-    private Privilege privilege; // ✅ Links to a privilege
+	@ManyToOne
+	@JoinColumn(name = "privilege_id", nullable = false)
+	private Privilege privilege; // ✅ Links to a privilege
 
-    @Column(nullable = false, updatable = false)
-    @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
+	@Column(nullable = false, updatable = false)
+	@Builder.Default
+	private LocalDateTime createdAt = LocalDateTime.now();
 }

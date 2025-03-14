@@ -1,6 +1,5 @@
 package com.xamplify.demo.modal;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -33,7 +32,7 @@ public class CompanyModulePrivilege {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ Uses auto-incremented BigInteger
-	private BigInteger id;
+	private Long id;
 
 	@ManyToOne
 	@JoinColumn(name = "company_id", nullable = false)

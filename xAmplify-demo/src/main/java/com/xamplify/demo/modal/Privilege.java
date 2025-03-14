@@ -1,6 +1,5 @@
 package com.xamplify.demo.modal;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -17,8 +16,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "xa_privilege",
-       uniqueConstraints = { @UniqueConstraint(columnNames = "name") }) // ✅ Unique privilege name
+@Table(name = "xa_privilege", uniqueConstraints = { @UniqueConstraint(columnNames = "name") }) // ✅ Unique privilege
+																								// name
 @Getter
 @Setter
 @NoArgsConstructor
@@ -26,15 +25,14 @@ import lombok.Setter;
 @Builder
 public class Privilege {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ Uses auto-incremented BigInteger
-    private BigInteger id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ Uses auto-incremented BigInteger
+	private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String name; // ✅ Privilege name (e.g., "ADD", "EDIT", "DELETE", "VIEW")
+	@Column(nullable = false, unique = true, columnDefinition = "CITEXT UNIQUE NOT NULL")
+	private String name; // ✅ Privilege name (e.g., "ADD", "EDIT", "DELETE", "VIEW")
 
-    @Column(nullable = false, updatable = false)
-    @Builder.Default
-    private LocalDateTime createdAt = LocalDateTime.now();
+	@Column(nullable = false, updatable = false)
+	@Builder.Default
+	private LocalDateTime createdAt = LocalDateTime.now();
 }
-

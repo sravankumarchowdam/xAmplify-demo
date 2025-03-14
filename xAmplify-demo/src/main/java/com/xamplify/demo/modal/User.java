@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "xa_users") // ✅ Explicitly maps to prefixed table
+@Table(name = "xa_user") // ✅ Explicitly maps to prefixed table
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,9 +28,10 @@ public class User {
 
 	@Id
 	@GeneratedValue
+	@Column(columnDefinition = "UUID DEFAULT uuid_generate_v4()")
 	private UUID id;
 
-	@Column(nullable = false, unique = true, columnDefinition = "CI")
+	@Column(nullable = false, unique = true, columnDefinition = "CITEXT")
 	private String emailAddress;
 
 	@Column
@@ -39,15 +40,12 @@ public class User {
 	@Column
 	private String lastName;
 
-	@Column(nullable = false, updatable = false)
+	@Column(nullable = false, updatable = false,columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Builder.Default
 	private LocalDateTime createdAt = LocalDateTime.now(); // ✅ Maps to 'created_at'
 
 	// ✅ Explicit Many-to-Many Mapping with UserCompany
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<UserCompany> userCompanies;
-
-	@OneToMany(mappedBy = "userCompany.user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<UserCompanyPrivilege> userCompanyPrivileges;
 
 }

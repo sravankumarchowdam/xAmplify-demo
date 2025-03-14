@@ -1,6 +1,5 @@
 package com.xamplify.demo.modal;
 
-import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -32,7 +31,7 @@ public class UserCompany {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private BigInteger id;
+	private Long id;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)

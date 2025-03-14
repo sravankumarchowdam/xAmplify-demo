@@ -1,9 +1,21 @@
 package com.xamplify.demo.modal;
 
-import jakarta.persistence.*;
-import lombok.*;
 import java.time.LocalDateTime;
-import java.math.BigInteger;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "xa_user_role", uniqueConstraints = { @UniqueConstraint(columnNames = { "user_company_id", "role_id" }) }) // ✅
@@ -18,7 +30,7 @@ public class UserRole {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ Uses auto-incremented BigInteger
-	private BigInteger id;
+	private Long id;
 
 	@ManyToOne
 	@JoinColumn(name = "user_company_id", nullable = false)

@@ -30,13 +30,13 @@ public class Company {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ Uses auto-incremented BigInteger
 	private Long id;
 
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false, unique = true, columnDefinition = "CITEXT")
 	private String name; // ✅ Case-insensitive due to PostgreSQL CITEXT
 
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false, unique = true, columnDefinition = "TEXT CHECK (domain_name = LOWER(domain_name))")
 	private String domainName; // ✅ Always stored in lowercase
 
-	@Column(nullable = false, updatable = false)
+	@Column(nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Builder.Default
 	private LocalDateTime createdAt = LocalDateTime.now();
 

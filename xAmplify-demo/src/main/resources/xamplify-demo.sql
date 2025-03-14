@@ -1,8 +1,13 @@
+
+
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE EXTENSION IF NOT EXISTS "citext"; 
 
 -----------------------------------------------------------
+
+DROP TABLE IF EXISTS xa_user CASCADE;
+
 -- xa_user --
 CREATE TABLE xa_user (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
