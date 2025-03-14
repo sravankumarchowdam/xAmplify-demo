@@ -1,4 +1,4 @@
-package com.xamplify.modal;
+package com.xamplify.demo.modal;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -46,5 +46,8 @@ public class User {
 	// ✅ Explicit Many-to-Many Mapping with UserCompany
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<UserCompany> userCompanies;
+
+	@OneToMany(mappedBy = "userCompany.user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<UserCompanyPrivilege> userCompanyPrivileges;
 
 }
