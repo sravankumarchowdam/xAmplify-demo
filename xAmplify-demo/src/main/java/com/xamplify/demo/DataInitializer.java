@@ -46,6 +46,14 @@ public class DataInitializer implements CommandLineRunner {
 	@Transactional(rollbackFor = Exception.class)
 	public void run(String... args) throws Exception {
 
+		// extracted();
+
+	}
+
+	/**
+	 * 
+	 */
+	private void extracted() {
 		System.out.println("******************In Command Line Runner*****************");
 
 		try {
@@ -179,11 +187,9 @@ public class DataInitializer implements CommandLineRunner {
 			deletePlayBookPrivilege.setName("DELETE_PLAY_BOOK");
 			privilegeRepository.save(deletePlayBookPrivilege);
 
-
 		} catch (Exception e) {
 			throw new RuntimeException("Transaction failed: " + e.getMessage(), e);
 		}
-
 	}
 
 	/**
