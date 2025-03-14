@@ -1,11 +1,100 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Home Page</title>
+    <title>Home - Admin Panel</title>
+    
+    <!-- ✅ Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- ✅ Custom Styles -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin-top: 50px;
+        }
+        .card {
+            transition: 0.3s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .card-title {
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h1 th:text="${message}">Welcome!</h1>
-    <a href="/app/dashboard">Go to Dashboard</a> | 
-    <a href="/app/api/data">Get JSON Data</a>
+
+    <div class="container text-center">
+        <h1 class="mb-4">Admin Dashboard</h1>
+
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            
+            <!-- Roles -->
+            <div class="col">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">Manage Roles</h5>
+                        <p class="card-text">Create, edit, and delete user roles.</p>
+                        <a href="/roles/list" class="btn btn-light w-100">Go to Roles</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Companies -->
+            <div class="col">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">Manage Companies</h5>
+                        <p class="card-text">Manage companies and their data.</p>
+                        <a href="/companies/list" class="btn btn-light w-100">Go to Companies</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Users -->
+            <div class="col">
+                <div class="card text-white bg-info">
+                    <div class="card-body">
+                        <h5 class="card-title">Manage Users</h5>
+                        <p class="card-text">Add, update, and remove users.</p>
+                        <a href="/users/list" class="btn btn-light w-100">Go to Users</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modules -->
+            <div class="col">
+                <div class="card text-white bg-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">Manage Modules</h5>
+                        <p class="card-text">Configure and manage modules.</p>
+                        <a href="/modules/list" class="btn btn-light w-100">Go to Modules</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Privileges -->
+            <div class="col">
+                <div class="card text-white bg-danger">
+                    <div class="card-body">
+                        <h5 class="card-title">Manage Privileges</h5>
+                        <p class="card-text">Set up user privileges and permissions.</p>
+                        <a href="/privileges/list" class="btn btn-light w-100">Go to Privileges</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ✅ Bootstrap JS (Optional for interactive components) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>
