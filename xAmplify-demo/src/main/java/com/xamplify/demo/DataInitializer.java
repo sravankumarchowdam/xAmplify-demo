@@ -12,6 +12,7 @@ import com.xamplify.demo.modal.Company;
 import com.xamplify.demo.modal.Role;
 import com.xamplify.demo.modal.User;
 import com.xamplify.demo.modal.UserCompany;
+import com.xamplify.demo.modal.UserRole;
 import com.xamplify.demo.repository.CompanyRepository;
 import com.xamplify.demo.repository.RoleRepository;
 import com.xamplify.demo.repository.UserRepository;
@@ -43,19 +44,24 @@ public class DataInitializer implements CommandLineRunner {
 			company = companyRepository.save(company);
 
 			// ✅ Create Role
-			Role role = Role.builder().name("ROLE_VENDOR").build();
-			role = roleRepository.save(role);
+			Role vendorRole = Role.builder().name("VENDOR").build();
+			vendorRole = roleRepository.save(vendorRole);
+
+			Role partnerRole = Role.builder().name("PARTNER").build();
+			partnerRole = roleRepository.save(partnerRole);
 
 			// ✅ Create User (with encrypted password)
 			User user = User.builder().emailAddress("sravan@xamplify.com").firstName("Sravan").lastName("Kumar")
 					.build();
 
+			// ✅ Assiging Company to User (UserCompany)
 			UserCompany userCompany = new UserCompany();
 			userCompany.setCompany(company);
 			userCompany.setUser(user);
-			Set<UserCompany> userCompanies = new HashSet<>();
-			userCompanies.add(userCompany);
-			user.setUserCompanies(userCompanies);
+
+			addRoles(vendorRole, partnerRole, userCompany);
+
+			addCompanies(user, userCompany);
 
 			user = userRepository.save(user);
 
@@ -63,6 +69,27 @@ public class DataInitializer implements CommandLineRunner {
 			throw new RuntimeException("Transaction failed: " + e.getMessage(), e);
 		}
 
+	}
+
+	private void addCompanies(User user, UserCompany userCompany) {
+		Set<UserCompany> userCompanies = new HashSet<>();
+		userCompanies.add(userCompany);
+		user.setUserCompanies(userCompanies);
+	}
+
+	private void addRoles(Role vendorRole, Role partnerRole, UserCompany userCompany) {
+		UserRole vendorUserRole = new UserRole();
+		vendorUserRole.setRole(vendorRole);
+		vendorUserRole.setUserCompany(userCompany);
+
+		UserRole partnerUserRole = new UserRole();
+		partnerUserRole.setRole(partnerRole);
+		partnerUserRole.setUserCompany(userCompany);
+
+		Set<UserRole> userRoles = new HashSet<>();
+		userRoles.add(partnerUserRole);
+		userRoles.add(vendorUserRole);
+		userCompany.setUserRoles(userRoles);
 	}
 
 }

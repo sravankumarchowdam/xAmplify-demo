@@ -40,6 +40,10 @@ public class UserCompany {
 	@ManyToOne
 	@JoinColumn(name = "company_id", nullable = false)
 	private Company company;
+	
+
+	@OneToMany(mappedBy = "userCompany", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<UserRole> userRoles; // ✅ Correct mapping
 
 	@OneToMany(mappedBy = "userCompany", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<UserCompanyPrivilege> userCompanyPrivileges; // ✅ Correct mapping

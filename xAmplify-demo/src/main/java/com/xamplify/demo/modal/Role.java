@@ -30,7 +30,7 @@ public class Role {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ Uses auto-incremented BigInteger
 	private Long id;
 
-	@Column(nullable = false, unique = true,columnDefinition = "TEXT CHECK (name = UPPER(name))")
+	@Column(nullable = false, unique = true, columnDefinition = "TEXT CHECK (name = UPPER(name))")
 	private String name;
 
 	@Column(nullable = false, updatable = false)
