@@ -67,13 +67,13 @@ public class RoleController {
 	// ✅ Delete role
 	@GetMapping("/delete/{id}")
 	public String deleteRole(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-	    try {
-	        roleService.deleteRole(id);
-	        redirectAttributes.addFlashAttribute("successMessage", "Role deleted successfully!");
-	    } catch (Exception e) {
-	        redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete role. It may be in use.");
-	    }
-	    
-	    return "redirect:/roles"; // Redirect to the roles page
+		try {
+			roleService.deleteRole(id);
+			redirectAttributes.addFlashAttribute("successMessage", "Role deleted successfully!");
+		} catch (Exception e) {
+			redirectAttributes.addFlashAttribute("errorMessage", "Failed to delete role. It may be in use.");
+		}
+
+		return "redirect:/roles"; // Redirect to the roles page
 	}
 }
