@@ -20,11 +20,11 @@ public class RoleController {
 	@Autowired
 	private RoleService roleService;
 
-	// ✅ Show the role form
-	@GetMapping("/new")
-	public String showRoleForm(Model model) {
+	@GetMapping
+	public String listRoles(Model model) {
+		model.addAttribute("roles", roleService.getAllRoles());
 		model.addAttribute("role", new Role());
-		return "role"; // Loads role.html
+		return "role";
 	}
 
 	// ✅ Save role to database
@@ -41,13 +41,6 @@ public class RoleController {
 
 		model.addAttribute("role", new Role()); // Ensure form is not pre-filled with old data
 		return "role"; // Stay on the same page instead of redirecting
-	}
-
-	// ✅ Display all roles
-	@GetMapping("/list")
-	public String listRoles(Model model) {
-		model.addAttribute("roles", roleService.getAllRoles());
-		return "role-list"; // Loads role-list.html
 	}
 
 	// ✅ Edit role (Load form with existing data)

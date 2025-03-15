@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Manage Companies</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+
+<body>
+	<div class="container mt-4">
+
+		<div class="text-center mt-4">
+			<a href="/" class="btn btn-dark">🏠 Home</a>
+		</div>
+		<h2>Manage Companies</h2>
+
+		<!-- Success Message -->
+		<div th:if="${successMessage}" class="alert alert-success">
+			<span th:text="${successMessage}"></span>
+		</div>
+
+		<!-- Error Message -->
+		<div th:if="${errorMessage}" class="alert alert-danger">
+			<span th:text="${errorMessage}"></span>
+		</div>
+
+		<!-- Company Form -->
+		<form th:action="@{/companies/save}" method="post" th:object="${company}">
+			<input type="hidden" th:field="*{id}">
+
+			<div class="mb-3">
+				<label for="companyName" class="form-label">Company Name</label>
+				<input type="text" id="companyName" class="form-control" th:field="*{name}" required>
+			</div>
+
+			<div class="mb-3">
+				<label for="domainName" class="form-label">Domain Name</label>
+				<input type="text" id="domainName" class="form-control" th:field="*{domainName}" required>
+			</div>
+
+			<button type="submit" class="btn btn-primary">Save Company</button>
+		</form>
+
+		<!-- Company List Table -->
+		<h3 class="mt-4">Existing Companies</h3>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Company Name</th>
+					<th>Domain Name</th>
+					<th>Created At</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="c : ${companies}">
+					<td th:text="${c.id}"></td>
+					<td th:text="${c.name}"></td>
+					<td th:text="${c.domainName}"></td>
+					<td th:text="${c.createdAt}"></td>
+					<td>
+						<a th:href="@{/companies/edit/{id}(id=${c.id})}" class="btn btn-warning btn-sm">Edit</a>
+						<a th:href="@{/companies/delete/{id}(id=${c.id})}" class="btn btn-danger btn-sm"
+							onclick="return confirm('Are you sure?')">Delete</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+
+</html>

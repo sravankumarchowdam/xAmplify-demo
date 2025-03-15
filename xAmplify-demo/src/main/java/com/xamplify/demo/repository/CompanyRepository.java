@@ -7,5 +7,8 @@ import com.xamplify.demo.modal.Company;
 
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
+	
+	boolean existsByNameIgnoreCase(String name);
+    boolean existsByDomainNameIgnoreCase(String domainName);
 
 }
