@@ -30,12 +30,12 @@
 
 			<div class="mb-3">
 				<label for="companyName" class="form-label">Company Name</label>
-				<input type="text" id="companyName" class="form-control" th:field="*{name}" required>
+				<input type="text" id="companyName" aria-autocomplete="off" class="form-control" th:field="*{name}" required>
 			</div>
 
 			<div class="mb-3">
 				<label for="domainName" class="form-label">Domain Name</label>
-				<input type="text" id="domainName" class="form-control" th:field="*{domainName}" required>
+				<input type="text" id="domainName" aria-autocomplete="off"  class="form-control" th:field="*{domainName}" required>
 			</div>
 
 			<button type="submit" class="btn btn-primary">Save Company</button>
@@ -43,7 +43,10 @@
 
 		<!-- Company List Table -->
 		<h3 class="mt-4">Existing Companies</h3>
-		<table class="table table-bordered">
+		<div th:if="${companies.empty}" class="alert alert-warning">
+					No companies found. Please add a new role.
+				</div>
+		<table class="table table-bordered" th:if="${not companies.empty}">
 			<thead>
 				<tr>
 					<th>ID</th>
