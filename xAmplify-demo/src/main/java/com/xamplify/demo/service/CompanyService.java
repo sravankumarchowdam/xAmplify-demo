@@ -11,22 +11,32 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.xamplify.demo.modal.Company;
 import com.xamplify.demo.modal.CompanyModule;
+import com.xamplify.demo.modal.CompanyModulePrivilege;
+import com.xamplify.demo.modal.Privilege;
+import com.xamplify.demo.repository.CompanyModulePrivilegeRepository;
 import com.xamplify.demo.repository.CompanyModuleRepository;
 import com.xamplify.demo.repository.CompanyRepository;
 import com.xamplify.demo.repository.ModuleRepository;
+import com.xamplify.demo.repository.PrivilegeRepository;
 
 @Service
 public class CompanyService {
 
 	@Autowired
-	private CompanyRepository companyRepository;
+    private CompanyRepository companyRepository;
 
-	@Autowired
-	private CompanyModuleRepository companyModuleRepository;
+    @Autowired
+    private CompanyModuleRepository companyModuleRepository;
 
-	@Autowired
-	private ModuleRepository moduleRepository;
+    @Autowired
+    private CompanyModulePrivilegeRepository companyModulePrivilegeRepository;
 
+    @Autowired
+    private ModuleRepository moduleRepository;
+
+    @Autowired
+    private PrivilegeRepository privilegeRepository;
+    
 	public List<Company> getAllCompanies() {
 		return companyRepository.findAll();
 	}
@@ -48,50 +58,60 @@ public class CompanyService {
 	}
 
 	@Transactional
-	public String saveOrUpdateCompany(Company company, List<Long> moduleIds, List<String> customNames) {
-		Company existingCompany;
+    public String saveOrUpdateCompany(Company company, List<Long> moduleIds, List<String> customNames) {
+        Company existingCompany;
 
-		if (company.getId() != null) { // ✅ If updating a company
-			existingCompany = companyRepository.findById(company.getId())
-					.orElseThrow(() -> new RuntimeException("Company not found"));
+        if (company.getId() != null) { // ✅ If updating a company
+            existingCompany = companyRepository.findById(company.getId())
+                    .orElseThrow(() -> new RuntimeException("Company not found"));
 
-			existingCompany.setName(company.getName());
-			existingCompany.setDomainName(company.getDomainName());
+            existingCompany.setName(company.getName());
+            existingCompany.setDomainName(company.getDomainName());
 
-			// ✅ Remove old module assignments
-			companyModuleRepository.deleteByCompanyId(existingCompany.getId());
-		} else { // ✅ If adding a new company
-			if (companyRepository.existsByNameIgnoreCase(company.getName())) {
-				return "Company name already exists.";
-			}
-			if (companyRepository.existsByDomainNameIgnoreCase(company.getDomainName())) {
-				return "Domain name already exists.";
-			}
-			existingCompany = new Company();
-			existingCompany.setName(company.getName());
-			existingCompany.setDomainName(company.getDomainName());
-		}
+            // ✅ Remove old module assignments
+            companyModuleRepository.deleteByCompanyId(existingCompany.getId());
+        } else { // ✅ If adding a new company
+            if (companyRepository.existsByNameIgnoreCase(company.getName())) {
+                return "Company name already exists.";
+            }
+            if (companyRepository.existsByDomainNameIgnoreCase(company.getDomainName())) {
+                return "Domain name already exists.";
+            }
+            existingCompany = new Company();
+            existingCompany.setName(company.getName());
+            existingCompany.setDomainName(company.getDomainName());
+        }
 
-		// ✅ Assign Modules
-		Set<CompanyModule> companyModules = new HashSet<>();
-		for (int i = 0; i < moduleIds.size(); i++) {
-			Long moduleId = moduleIds.get(i);
-			String customName = customNames.get(i);
+        // ✅ Assign Modules & Privileges
+        Set<CompanyModule> companyModules = new HashSet<>();
+        for (int i = 0; i < moduleIds.size(); i++) {
+            Long moduleId = moduleIds.get(i);
+            String customName = customNames.get(i);
 
-			com.xamplify.demo.modal.Module module = moduleRepository.findById(moduleId)
-					.orElseThrow(() -> new RuntimeException("Module not found"));
+            com.xamplify.demo.modal.Module module = moduleRepository.findById(moduleId)
+                    .orElseThrow(() -> new RuntimeException("Module not found"));
 
-			CompanyModule companyModule = new CompanyModule();
-			companyModule.setCompany(existingCompany);
-			companyModule.setModule(module);
-			companyModule.setCustomName(customName);
-			companyModules.add(companyModule);
-		}
+            CompanyModule companyModule = new CompanyModule();
+            companyModule.setCompany(existingCompany);
+            companyModule.setModule(module);
+            companyModule.setCustomName(customName);
+            companyModules.add(companyModule);
 
-		existingCompany.setCompanyModules(companyModules);
-		companyRepository.save(existingCompany);
-		return "Company and assigned modules saved successfully.";
-	}
+            // ✅ Assign Privileges Automatically
+            List<Privilege> modulePrivileges = privilegeRepository.findByModuleId(moduleId);
+            for (Privilege privilege : modulePrivileges) {
+                CompanyModulePrivilege companyModulePrivilege = new CompanyModulePrivilege();
+                companyModulePrivilege.setCompanyModule(companyModule);
+                companyModulePrivilege.setPrivilege(privilege);
+                companyModulePrivilegeRepository.save(companyModulePrivilege);
+            }
+        }
+
+        existingCompany.setCompanyModules(companyModules);
+        companyRepository.save(existingCompany);
+        return "Company, assigned modules, and privileges saved successfully.";
+    }
+
 
 	@Transactional
 	public void deleteCompany(Long id) {
