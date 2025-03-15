@@ -43,7 +43,5 @@ public class Company {
 	@OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<CompanyModule> companyModules;
 
-	@OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<CompanyModulePrivilege> companyModulePrivileges;
 
 }

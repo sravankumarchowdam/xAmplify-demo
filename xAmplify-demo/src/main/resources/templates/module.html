@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Manage Modules & Privileges</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-dark">🏠 Home</a>
+        </div>
+
+        <h2>Manage Modules & Privileges</h2>
+
+        <!-- Success & Error Messages -->
+        <div th:if="${successMessage}" class="alert alert-success">
+            <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger">
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <!-- Module Form -->
+        <form th:action="@{/modules/save}" method="post" th:object="${module}">
+            <input type="hidden" th:field="*{id}"/>
+
+            <div class="mb-3">
+                <label>Module Name</label>
+                <input type="text" class="form-control" th:field="*{name}" required>
+            </div>
+
+            <div class="mb-3">
+                <label>Privileges</label>
+                <div id="privileges-container">
+                    <!-- ✅ Pre-fill existing privileges when editing -->
+                    <div th:each="privilege, iterStat : *{privileges}">
+                        <input type="text" th:value="${privilege.name}" name="privilegeNames" class="form-control mb-2" required>
+                    </div>
+                    
+                    <!-- ✅ Empty input for adding new privileges -->
+                    <input type="text" name="privilegeNames" class="form-control mb-2" placeholder="New Privilege">
+                </div>
+                <button type="button" class="btn btn-secondary" onclick="addPrivilege()">+ Add Privilege</button>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <span th:if="*{id}">Update Module</span>
+                <span th:unless="*{id}">Save Module</span>
+            </button>
+        </form>
+
+        <!-- Modules List -->
+        <h3 class="mt-4">Existing Modules</h3>
+        <table class="table table-bordered">
+            <thead><tr><th>Module</th><th>Privileges</th><th>Actions</th></tr></thead>
+            <tbody>
+                <tr th:each="m : ${modules}">
+                    <td th:text="${m.name}"></td>
+                    <td>
+                        <ul>
+                            <li th:each="p : ${m.privileges}" th:text="${p.name}"></li>
+                        </ul>
+                    </td>
+                    <td>
+                        <!-- ✅ Edit Button: Prefills Form -->
+                        <a th:href="@{/modules/edit/{id}(id=${m.id})}" class="btn btn-warning btn-sm">Edit</a>
+                        
+                        <!-- ✅ Delete Button: Confirmation before deleting -->
+                        <a th:href="@{/modules/delete/{id}(id=${m.id})}" class="btn btn-danger btn-sm"
+                            onclick="return confirm('Are you sure you want to delete this module?')">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- JavaScript to dynamically add privilege input fields -->
+    <script>
+        function addPrivilege() {
+            let container = document.getElementById('privileges-container');
+            let input = document.createElement('input');
+            input.type = 'text';
+            input.name = 'privilegeNames';
+            input.className = 'form-control mb-2';
+            input.placeholder = 'New Privilege';
+            container.appendChild(input);
+        }
+    </script>
+</body>
+</html>

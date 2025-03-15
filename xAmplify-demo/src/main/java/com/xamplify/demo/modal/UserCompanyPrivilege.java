@@ -36,10 +36,6 @@ public class UserCompanyPrivilege {
 	private UserCompany userCompany; // ✅ Links user to company
 
 	@ManyToOne
-	@JoinColumn(name = "company_module_id", nullable = false)
-	private CompanyModule companyModule; // ✅ Links module to company
-
-	@ManyToOne
 	@JoinColumn(name = "company_module_privilege_id", nullable = false)
 	private CompanyModulePrivilege companyModulePrivilege; // ✅ Links privilege to module & company
 

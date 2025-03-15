@@ -1,0 +1,28 @@
+/* ✅ Align modules in a responsive grid */
+.module-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive layout */
+    gap: 15px; /* Spacing between items */
+    margin-top: 10px;
+}
+
+/* ✅ Style individual module items */
+.module-item {
+    display: flex;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+/* ✅ Space out checkbox and label */
+.module-item input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+/* ✅ Improve spacing for the custom name input */
+.custom-name-input {
+    margin-left: 10px;
+    flex-grow: 1; /* Ensures input takes available space */
+}

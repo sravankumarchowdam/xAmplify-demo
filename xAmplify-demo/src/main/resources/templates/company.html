@@ -1,76 +1,91 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
-	<title>Manage Companies</title>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Manage Companies & Assign Modules</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+	<link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
-
 <body>
-	<div class="container mt-4">
+    <div class="container mt-4">
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-dark">🏠 Home</a>
+        </div>
 
-		<div class="text-center mt-4">
-			<a href="/" class="btn btn-dark">🏠 Home</a>
-		</div>
-		<h2>Manage Companies</h2>
+        <h2>Manage Companies & Assign Modules</h2>
 
-		<!-- Success Message -->
-		<div th:if="${successMessage}" class="alert alert-success">
-			<span th:text="${successMessage}"></span>
-		</div>
+        <!-- Success & Error Messages -->
+        <div th:if="${successMessage}" class="alert alert-success">
+            <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-danger">
+            <span th:text="${errorMessage}"></span>
+        </div>
 
-		<!-- Error Message -->
-		<div th:if="${errorMessage}" class="alert alert-danger">
-			<span th:text="${errorMessage}"></span>
-		</div>
+        <!-- Company Form -->
+        <form th:action="@{/companies/saveOrUpdate}" method="post" th:object="${company}">
+            <input type="hidden" th:field="*{id}"/>
 
-		<!-- Company Form -->
-		<form th:action="@{/companies/save}" method="post" th:object="${company}">
-			<input type="hidden" th:field="*{id}">
+            <div class="mb-3">
+                <label>Company Name</label>
+                <input type="text" class="form-control" th:field="*{name}" required>
+            </div>
+
+            <div class="mb-3">
+                <label>Domain Name</label>
+                <input type="text" class="form-control" th:field="*{domainName}" required>
+            </div>
 
 			<div class="mb-3">
-				<label for="companyName" class="form-label">Company Name</label>
-				<input type="text" id="companyName" aria-autocomplete="off" class="form-control" th:field="*{name}" required>
+			    <label class="form-label">Assign Modules</label>
+			    <div id="modules-container" class="module-grid">
+			        <!-- ✅ Loop through all available modules -->
+			        <div th:each="module : ${modules}" class="module-item">
+			            <!-- ✅ Checkbox for module selection -->
+			            <input type="checkbox" name="moduleIds" th:value="${module.id}"
+			                   th:checked="${company.companyModules != null and company.companyModules.?[module.id == __${module.id}__].size() > 0}">
+
+			            <!-- ✅ Label for module name -->
+			            <label th:text="${module.name}"></label>
+
+			            <!-- ✅ Input field for custom module name -->
+			            <input type="text" name="customNames" class="form-control custom-name-input"
+			                   th:value="${company.companyModules != null and company.companyModules.?[module.id == __${module.id}__].size() > 0 ? company.companyModules.?[module.id == __${module.id}__][0].customName : ''}"
+			                   placeholder="Custom Module Name">
+			        </div>
+			    </div>
 			</div>
 
-			<div class="mb-3">
-				<label for="domainName" class="form-label">Domain Name</label>
-				<input type="text" id="domainName" aria-autocomplete="off"  class="form-control" th:field="*{domainName}" required>
-			</div>
 
-			<button type="submit" class="btn btn-primary">Save Company</button>
-		</form>
+            <button type="submit" class="btn btn-primary">
+                <span th:if="*{id}">Update Company</span>
+                <span th:unless="*{id}">Save Company</span>
+            </button>
+        </form>
 
-		<!-- Company List Table -->
-		<h3 class="mt-4">Existing Companies</h3>
-		<div th:if="${companies.empty}" class="alert alert-warning">
-					No companies found. Please add a new role.
-				</div>
-		<table class="table table-bordered" th:if="${not companies.empty}">
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Company Name</th>
-					<th>Domain Name</th>
-					<th>Created At</th>
-					<th>Actions</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="c : ${companies}">
-					<td th:text="${c.id}"></td>
-					<td th:text="${c.name}"></td>
-					<td th:text="${c.domainName}"></td>
-					<td th:text="${c.createdAt}"></td>
-					<td>
-						<a th:href="@{/companies/edit/{id}(id=${c.id})}" class="btn btn-warning btn-sm">Edit</a>
-						<a th:href="@{/companies/delete/{id}(id=${c.id})}" class="btn btn-danger btn-sm"
-							onclick="return confirm('Are you sure?')">Delete</a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
+        <!-- Companies List -->
+        <h3 class="mt-4">Existing Companies</h3>
+        <table class="table table-bordered">
+            <thead><tr><th>Company</th><th>Domain</th><th>Assigned Modules</th><th>Actions</th></tr></thead>
+            <tbody>
+                <tr th:each="c : ${companies}">
+                    <td th:text="${c.name}"></td>
+                    <td th:text="${c.domainName}"></td>
+                    <td>
+                        <ul>
+                            <li th:each="cm : ${c.companyModules}" th:text="${cm.customName}"></li>
+                        </ul>
+                    </td>
+                    <td>
+                        <!-- ✅ Edit Button: Pre-fills the form -->
+                        <a th:href="@{/companies/edit/{id}(id=${c.id})}" class="btn btn-warning btn-sm">Edit</a>
+                        
+                        <!-- ✅ Delete Button: Confirmation before deleting -->
+                        <a th:href="@{/companies/delete/{id}(id=${c.id})}" class="btn btn-danger btn-sm"
+                            onclick="return confirm('Are you sure you want to delete this company?')">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </body>
-
 </html>

@@ -8,4 +8,6 @@ import com.xamplify.demo.modal.Module;
 @Repository
 public interface ModuleRepository extends JpaRepository<Module, Long> {
 
+	boolean existsByNameIgnoreCase(String name);
+
 }

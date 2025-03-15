@@ -32,13 +32,15 @@ public class Module {
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ Uses auto-incremented BigInteger
 	private Long id;
 
-	@Column(nullable = false, unique = true,columnDefinition = "CITEXT UNIQUE NOT NULL")
+	@Column(nullable = false, unique = true, columnDefinition = "CITEXT UNIQUE NOT NULL")
 	private String name; // ✅ Global module name (case-sensitive)
 
 	@Column(nullable = false, updatable = false)
 	@Builder.Default
 	private LocalDateTime createdAt = LocalDateTime.now();
 
+	@OneToMany(mappedBy = "module", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Set<Privilege> privileges;
 	// ✅ Mapped with CompanyModules
 	@OneToMany(mappedBy = "module", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<CompanyModule> companyModules;

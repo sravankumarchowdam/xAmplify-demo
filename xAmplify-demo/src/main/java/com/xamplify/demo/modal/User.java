@@ -40,7 +40,7 @@ public class User {
 	@Column
 	private String lastName;
 
-	@Column(nullable = false, updatable = false,columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@Column(nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Builder.Default
 	private LocalDateTime createdAt = LocalDateTime.now(); // ✅ Maps to 'created_at'
 

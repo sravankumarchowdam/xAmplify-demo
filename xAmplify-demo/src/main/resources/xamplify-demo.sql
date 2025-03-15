@@ -79,7 +79,8 @@ CREATE TABLE xa_module (
 -- ✅ Unique Index for Fast Lookups
 CREATE UNIQUE INDEX idx_xa_module_name ON xa_module(name);
 
---------------------------------------------------------------------
+------------------------------------------------------------------------------------
+
 CREATE TABLE xa_company_module (
     id BIGSERIAL PRIMARY KEY, -- ✅ Auto-incremented ID
     company_id BIGINT NOT NULL REFERENCES xa_company(id) ON DELETE CASCADE,
@@ -96,50 +97,24 @@ CREATE TABLE xa_company_module (
 CREATE INDEX idx_xa_company_module_company ON xa_company_module(company_id);
 CREATE INDEX idx_xa_company_module_module ON xa_company_module(module_id);
 CREATE INDEX idx_xa_company_module_custom_name ON xa_company_module(custom_name);
-
-----------------------------------------------------------------------------------
-
-CREATE TABLE xa_privilege (
-    id BIGSERIAL PRIMARY KEY, -- ✅ Auto-incremented ID
-    name TEXT UNIQUE NOT NULL CHECK (name ~ '^[A-Z_]+$'), -- ✅ Only uppercase A-Z and underscores (_)
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- ✅ Index for faster lookups
-CREATE UNIQUE INDEX idx_xa_privilege_name ON xa_privilege(name);
-
-------------------------------------------------------------------------------------
-
-CREATE TABLE xa_module_privilege (
-    id BIGSERIAL PRIMARY KEY, -- ✅ Auto-incremented ID
-    module_id BIGINT NOT NULL REFERENCES xa_module(id) ON DELETE CASCADE, -- ✅ Links to module
-    privilege_id BIGINT NOT NULL REFERENCES xa_privilege(id) ON DELETE CASCADE, -- ✅ Links to privilege
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (module_id, privilege_id) -- ✅ Ensures each module-privilege pair is unique
-);
-
--- ✅ Indexes for faster lookups
-CREATE INDEX idx_xa_module_privilege_module ON xa_module_privilege(module_id);
-CREATE INDEX idx_xa_module_privilege_privilege ON xa_module_privilege(privilege_id);
-
--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 CREATE TABLE xa_company_module_privilege (
     id BIGSERIAL PRIMARY KEY, -- ✅ Auto-incremented ID
-    company_id BIGINT NOT NULL REFERENCES xa_company(id) ON DELETE CASCADE, -- ✅ Links to company
-    module_privilege_id BIGINT NOT NULL REFERENCES xa_module_privilege(id) ON DELETE CASCADE, -- ✅ Links to module-privilege
+    company_module_id BIGINT NOT NULL REFERENCES xa_company_module(id) ON DELETE CASCADE,
+    privilege_id BIGINT NOT NULL REFERENCES xa_privilege(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (company_id, module_privilege_id) -- ✅ Ensures uniqueness per company
 );
 
 -- ✅ Indexes for faster lookups
-CREATE INDEX idx_xa_company_module_privilege_company ON xa_company_module_privilege(company_id);
-CREATE INDEX idx_xa_company_module_privilege_module_privilege ON xa_company_module_privilege(module_privilege_id);
+-- ✅ Indexes for Faster Queries
+CREATE INDEX idx_xa_cmp_module_privilege_company_module ON xa_company_module_privilege(company_module_id);
+CREATE INDEX idx_xa_cmp_module_privilege_privilege ON xa_company_module_privilege(privilege_id);
 
 -------------------------------------------------------------------------------------------------
 CREATE TABLE xa_user_company_privilege (
     id BIGSERIAL PRIMARY KEY, -- ✅ Auto-incremented ID
     user_company_id BIGINT NOT NULL REFERENCES xa_user_company(id) ON DELETE CASCADE, -- ✅ Links user to company
-    company_module_id BIGINT NOT NULL REFERENCES xa_company_module(id) ON DELETE CASCADE, -- ✅ Links module to company
     company_module_privilege_id BIGINT NOT NULL REFERENCES xa_company_module_privilege(id) ON DELETE CASCADE, -- ✅ Links privilege to module & company
     assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (user_company_id, company_module_privilege_id) -- ✅ Prevents duplicate privilege assignments for a user
@@ -147,5 +122,4 @@ CREATE TABLE xa_user_company_privilege (
 
 -- ✅ Indexes for Faster Lookups
 CREATE INDEX idx_xa_user_company_privilege_user_company ON xa_user_company_privilege(user_company_id);
-CREATE INDEX idx_xa_user_company_privilege_company_module ON xa_user_company_privilege(company_module_id);
-CREATE INDEX idx_xa_user_company_privilege_company_module_privilege ON xa_user_company_privilege(company_module_privilege_id);
+CREATE INDEX idx_xa_user_company_privilege_cmp_module_privilege ON xa_user_company_privilege(company_module_privilege_id);
