@@ -1,65 +1,68 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head>
-	<title>Manage Roles</title>
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Manage Roles</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 </head>
-
 <body>
-	<div class="container mt-4">
+    <div class="container mt-4">
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-dark">🏠 Home</a>
+        </div>
 
-		<div class="text-center mt-4">
-			<a href="/" class="btn btn-dark">🏠 Home</a>
-		</div>
+        <h2>Manage Roles</h2>
 
+        <!-- Success Message (Flash Attribute) -->
+        <div th:if="${successMessage}" class="alert alert-success">
+            <span th:text="${successMessage}"></span>
+        </div>
 
+        <!-- Error Message (Flash Attribute) -->
+        <div th:if="${errorMessage}" class="alert alert-danger">
+            <span th:text="${errorMessage}"></span>
+        </div>
 
-		<h2>Manage Roles</h2>
+        <!-- Role Form (Handles Create & Update) -->
+        <form th:action="@{/roles/save}" method="post" th:object="${role}">
+            <input type="hidden" th:field="*{id}" /> <!-- Hidden ID for updates -->
 
-		<!-- Success Message -->
-		<div th:if="${successMessage}" class="alert alert-success">
-			<span th:text="${successMessage}"></span>
-		</div>
+            <div class="mb-3">
+                <label for="roleName" class="form-label">Role Name</label>
+                <input type="text" id="roleName" autocomplete="off" class="form-control" th:field="*{name}" required>
+            </div>
 
-		<!-- Error Message -->
-		<div th:if="${errorMessage}" class="alert alert-danger">
-			<span th:text="${errorMessage}"></span>
-		</div>
+            <!-- Save or Update button -->
+            <button type="submit" class="btn btn-primary">
+                <span th:if="*{id}">Update Role</span>
+                <span th:unless="*{id}">Save Role</span>
+            </button>
+        </form>
 
-		<!-- Role Form -->
-		<form th:action="@{/roles/save}" method="post" th:object="${role}">
-			<div class="mb-3">
-				<label for="roleName" class="form-label">Role Name</label>
-				<input type="text" id="roleName" autocomplete="off" class="form-control" th:field="*{name}" required>
-			</div>
-			<button type="submit" class="btn btn-primary">Save Role</button>
-		</form>
-
-		<!-- Existing Roles Table (If needed) -->
-		<h3 class="mt-4">Existing Roles</h3>
-		<table class="table table-bordered">
-			<thead>
-				<tr>
-					<th>ID</th>
-					<th>Role Name</th>
-					<th>Created At</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="r : ${roles}">
-					<td th:text="${r.id}"></td>
-					<td th:text="${r.name}"></td>
-					<td th:text="${r.createdAt}"></td>
-					<td>
-						<a th:href="@{/roles/edit/{id}(id=${c.id})}" class="btn btn-warning btn-sm">Edit</a>
-						<a th:href="@{/roles/delete/{id}(id=${c.id})}" class="btn btn-danger btn-sm"
-							onclick="return confirm('Are you sure?')">Delete</a>
-					</td>
-				</tr>
-			</tbody>
-		</table>
-	</div>
+        <!-- Existing Roles Table -->
+        <h3 class="mt-4">Existing Roles</h3>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Role Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="r : ${roles}">
+                    <td th:text="${r.id}"></td>
+                    <td th:text="${r.name}"></td>
+                    <td>
+                        <!-- Edit Button -->
+                        <a th:href="@{/roles/edit/{id}(id=${r.id})}" class="btn btn-warning btn-sm">Edit</a>
+                        
+                        <!-- Delete Button (Passes ID) -->
+                        <a th:href="@{/roles/delete/{id}(id=${r.id})}" class="btn btn-danger btn-sm"
+                            onclick="return confirm('Are you sure you want to delete this role?')">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </body>
-
 </html>
