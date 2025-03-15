@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.xamplify.demo.exception.DuplicateRoleException;
 import com.xamplify.demo.modal.Role;
 import com.xamplify.demo.service.RoleService;
 
@@ -28,9 +29,18 @@ public class RoleController {
 
 	// ✅ Save role to database
 	@PostMapping("/save")
-	public String saveRole(@ModelAttribute Role role) {
-		roleService.saveRole(role);
-		return "redirect:/roles/list";
+	public String saveRole(@ModelAttribute Role role, Model model) {
+		try {
+			roleService.saveRole(role);
+			model.addAttribute("successMessage", "Role saved successfully!");
+		} catch (DuplicateRoleException ex) {
+			model.addAttribute("errorMessage", ex.getMessage());
+		} catch (Exception ex) {
+			model.addAttribute("errorMessage", "An unexpected error occurred. Please try again.");
+		}
+
+		model.addAttribute("role", new Role()); // Ensure form is not pre-filled with old data
+		return "role"; // Stay on the same page instead of redirecting
 	}
 
 	// ✅ Display all roles
