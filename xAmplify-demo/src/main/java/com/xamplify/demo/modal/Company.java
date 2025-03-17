@@ -2,6 +2,7 @@ package com.xamplify.demo.modal;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -25,6 +26,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class Company {
+
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // ✅ Uses auto-incremented BigInteger

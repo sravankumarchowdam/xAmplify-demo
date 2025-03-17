@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Manage Users</title>
+	<link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+</head>
+
+<body>
+	<div class="container mt-4">
+		<div class="text-center mt-4">
+			<a href="/" class="btn btn-dark">🏠 Home</a>
+		</div>
+
+		<h2>Manage Users</h2>
+
+		<!-- Success & Error Messages -->
+		<div th:if="${successMessage}" class="alert alert-success">
+			<span th:text="${successMessage}"></span>
+		</div>
+		<div th:if="${errorMessage}" class="alert alert-danger">
+			<span th:text="${errorMessage}"></span>
+		</div>
+
+		<!-- User Form -->
+		<form th:action="@{/users/saveOrUpdate}" method="post" th:object="${user}">
+			<input type="hidden" th:field="*{id}" />
+
+			<div class="mb-3">
+				<label>Email Address</label>
+				<input type="email" class="form-control" th:field="*{emailAddress}" required>
+			</div>
+
+			<div class="mb-3">
+				<label>First Name</label>
+				<input type="text" class="form-control" th:field="*{firstName}" required>
+			</div>
+
+			<div class="mb-3">
+				<label>Last Name</label>
+				<input type="text" class="form-control" th:field="*{lastName}" required>
+			</div>
+
+			<div class="mb-3">
+				<label>Company</label>
+				<select class="form-control" name="companyId">
+					<option th:each="company : ${companies}" th:value="${company.id}" th:text="${company.name}">
+					</option>
+				</select>
+			</div>
+
+			<div class="mb-3">
+				<label>Assign Modules</label>
+				<div id="modules-container">
+					<div th:each="module : ${modules}" class="module-item">
+						<input type="checkbox" name="moduleIds" th:value="${module.id}"
+							th:checked="${user.userCompanies != null and user.userCompanies.?[company.id == companyId].size() > 0}">
+						<label th:text="${module.module.name}"></label> <!-- ✅ Now referencing `module.module.name` -->
+					</div>
+				</div>
+			</div>
+
+			<div class="mb-3">
+				<label>Assign Role</label>
+				<select class="form-control" name="roleId">
+					<option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.name}"></option>
+				</select>
+			</div>
+
+
+
+			<button type="submit" class="btn btn-primary">Save User</button>
+		</form>
+
+		<!-- Users List -->
+		<h3 class="mt-4">Existing Users</h3>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Email</th>
+					<th>First Name</th>
+					<th>Last Name</th>
+					<th>Company</th>
+					<th>Modules</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="u : ${users}">
+					<td th:text="${u.emailAddress}"></td>
+					<td th:text="${u.firstName}"></td>
+					<td th:text="${u.lastName}"></td>
+					<td th:text="${u.userCompanies[0].company.name}"></td>
+					<td>
+						<ul>
+							<li th:each="privilege : ${u.userCompanies[0].userCompanyPrivileges}"
+								th:text="${privilege.companyModulePrivilege.privilege.name}">
+							</li>
+						</ul>
+					</td>
+					<td>
+						<!-- Edit Button -->
+						<a th:href="@{/users/edit/{id}(id=${u.id})}" class="btn btn-warning btn-sm">Edit</a>
+
+						<!-- Delete Button -->
+						<a th:href="@{/users/delete/{id}(id=${u.id})}" class="btn btn-danger btn-sm"
+							onclick="return confirm('Are you sure you want to delete this user?')">Delete</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</body>
+
+</html>

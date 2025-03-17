@@ -11,4 +11,7 @@ import com.xamplify.demo.modal.CompanyModulePrivilege;
 public interface CompanyModulePrivilegeRepository extends JpaRepository<CompanyModulePrivilege, Long> {
     List<CompanyModulePrivilege> findByCompanyModuleId(Long companyModuleId);
     void deleteByCompanyModuleId(Long companyModuleId);
+    List<CompanyModulePrivilege> findByCompanyModule_ModuleId(Long moduleId);
+
+
 }
